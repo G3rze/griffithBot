@@ -8,46 +8,44 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerManager {
+
     private static PlayerManager INSTANCE;
+    private Map<Long, GuildMusicManager> guildMusicManagerMap = new HashMap<>();
+    private AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
 
-    private final Map<Long, GuildMusicManager> musicManagers;
-    private final AudioPlayerManager audioPlayerManager;
-
-    public PlayerManager() {
-        this.musicManagers = new HashMap<>();
-        this.audioPlayerManager = new DefaultAudioPlayerManager();
-
-        AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
-        AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
+    private PlayerManager(){
+        AudioSourceManagers.registerRemoteSources(audioPlayerManager);
+        AudioSourceManagers.registerLocalSource(audioPlayerManager);
     }
 
-    public GuildMusicManager getMusicManager(Guild guild){
-        return this.musicManagers.computeIfAbsent(guild.getIdLong(), (guildID) -> {
-            final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager);
-            guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
-            return guildMusicManager;
+    public static PlayerManager getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new PlayerManager();
+        }
+        return INSTANCE;
+    }
+
+    public GuildMusicManager getGuildMusicManager(Guild guild) {
+        return guildMusicManagerMap.computeIfAbsent(guild.getIdLong(), (guildId) -> {
+            GuildMusicManager musicManager = new GuildMusicManager(audioPlayerManager);
+
+            guild.getAudioManager().setSendingHandler(musicManager.getAudioForwarder());
+
+            return musicManager;
         });
     }
 
-    public void loadAndPlay(TextChannel channel, String trackUrl){
-        final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
-
-        this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+    public void play(Guild guild, String trackURL){
+        GuildMusicManager guildMusicManager = getGuildMusicManager(guild);
+        audioPlayerManager.loadItemOrdered(guildMusicManager, trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                musicManager.scheduler.queue(audioTrack);
-
-                channel.sendMessage("Adding to queue : '"
-                        +audioTrack.getInfo().title
-                        +"' byb '"
-                        +audioTrack.getInfo().author)
-                        .queue();
+                guildMusicManager.getTrackScheculer().queue(audioTrack);
             }
 
             @Override
@@ -66,12 +64,4 @@ public class PlayerManager {
             }
         });
     }
-
-    public static PlayerManager getInstance(){
-        if (INSTANCE == null){
-            INSTANCE = new PlayerManager();
-        }
-        return INSTANCE;
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.griffith;
 
-import com.griffith.commands.Command;
+import com.griffith.commands.OptionCommand;
+import com.griffith.commands.SimpleCommand;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -13,28 +14,40 @@ import java.util.List;
 public class CommandManager extends ListenerAdapter {
 
 
-    private List<Command> commandList = new ArrayList<>();
+    private List<OptionCommand> optionCommandList = new ArrayList<>();
+    private List<SimpleCommand> simpleCommandList = new ArrayList<>();
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         for (Guild guild : event.getJDA().getGuilds()) {
-            for (Command command : commandList) {
-                guild.upsertCommand(command.name, command.description).addOptions(command.args).queue();
+            for (OptionCommand optionCommand : optionCommandList) {
+                guild.upsertCommand(optionCommand.name, optionCommand.description).addOptions(optionCommand.args).queue();
+            }
+            for (SimpleCommand simpleCommand : simpleCommandList) {
+                guild.upsertCommand(simpleCommand.name, simpleCommand.description).queue();
             }
         }
     }
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        for (Command command : commandList) {
-            if (command.name.equals(event.getName())) {
-                command.execute(event);
+        for (OptionCommand optionCommand : optionCommandList) {
+            if (optionCommand.name.equals(event.getName())) {
+                optionCommand.execute(event);
+                return;
+            }
+        }
+        for (SimpleCommand simpleCommand : simpleCommandList) {
+            if (simpleCommand.name.equals(event.getName())) {
+                simpleCommand.execute(event);
                 return;
             }
         }
     }
 
-    public void add(Command command) {
-        commandList.add(command);
+    public void add(OptionCommand optionCommand) {
+        optionCommandList.add(optionCommand);
+    }
+    public void add(SimpleCommand simpleCommand) {simpleCommandList.add(simpleCommand);
     }
 }

@@ -7,13 +7,12 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 
-public class NewRole extends Command {
+public class NewRole extends OptionCommand {
     public NewRole(GriffithBot bot) {
         super(bot);
         this.name = "new-role";
@@ -29,7 +28,7 @@ public class NewRole extends Command {
     }
 
     @Override
-    public AuditableRestAction<Void> execute(SlashCommandInteraction event) {
+    public void execute(SlashCommandInteraction event) {
 
         OptionMapping role = event.getOption("role");
         String name = role.getAsString();
@@ -81,7 +80,7 @@ public class NewRole extends Command {
         } else {
             event.reply("You don't have the permission to do this!").setEphemeral(true).queue();
         }
-        return null;
+        return;
     }
 
 

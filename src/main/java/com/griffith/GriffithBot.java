@@ -3,6 +3,8 @@ package com.griffith;
 import com.griffith.commands.GiveRole;
 import com.griffith.commands.NewRole;
 import com.griffith.commands.music.Play;
+import com.griffith.commands.music.Skip;
+import com.griffith.commands.music.Stop;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -40,6 +42,8 @@ public class GriffithBot {
         manager.add(new NewRole(this));
         manager.add(new GiveRole(this));
         manager.add(new Play(this));
+        manager.add(new Skip(this));
+        manager.add(new Stop(this));
         shardManager.addEventListener(manager);
 
     }

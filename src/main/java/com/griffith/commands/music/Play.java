@@ -1,63 +1,59 @@
 package com.griffith.commands.music;
 
 import com.griffith.GriffithBot;
-import com.griffith.commands.Command;
+import com.griffith.commands.OptionCommand;
 import com.griffith.lavaplayer.PlayerManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
-import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;
 
-public class Play extends Command {
+public class Play extends OptionCommand {
 
     public Play(GriffithBot bot) {
         super(bot);
         this.name = "play";
-        this.description = "Plays music with a Youtube link!";
+        this.description = "Plays some music!";
         this.permission = Permission.MESSAGE_SEND;
         this.botPermission = Permission.VOICE_SPEAK;
         this.args = new ArrayList<>();
+
+        args.add(new OptionData(OptionType.STRING, "url", "The URL of the song that you want to play", true));
     }
 
     @Override
-    public AuditableRestAction<Void> execute(SlashCommandInteraction event) {
-        final TextChannel channel = (TextChannel) event.getChannel();
-        final Member self = event.getGuild().getSelfMember();
-        final GuildVoiceState selfVoiceState = self.getVoiceState();
+    public void execute(SlashCommandInteraction event) {
+        Member member = event.getMember();
+        GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if (selfVoiceState.inAudioChannel()) {
-            channel.sendMessage("I'm already in a voice channel").queue();
+        if(!memberVoiceState.inAudioChannel()){
+            event.reply("You must be in a voice channel").queue();
+            return;
         }
 
-        final Member member = event.getMember();
-        final GuildVoiceState memberVoiceState = member.getVoiceState();
+        Member selfBot = event.getGuild().getSelfMember();
+        GuildVoiceState selfBotVoiceState = selfBot.getVoiceState();
 
-        if (!memberVoiceState.inAudioChannel()){
-            channel.sendMessage("You need to be in a voice channel for this command to work").queue();
+        if(!selfBotVoiceState.inAudioChannel()) {
+            event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
+            event.reply("Connecting to '\uD83D\uDD0A' " + memberVoiceState.getChannel().getAsMention()).queue();
+
+        } else {
+            if(selfBotVoiceState.getChannel() != memberVoiceState.getChannel()){
+                event.reply("You must be in the same channel with me").queue();
+                return;
+            }
         }
+        PlayerManager playerManager = PlayerManager.getInstance();
+        playerManager.play(event.getGuild(), event.getOption("url").getAsString());
 
-        if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            channel.sendMessage("You need to be in the same voice as the bot for this to work").queue();
-        }
+        event.reply("Next song added to the queue!").queue();
 
-        final AudioManager audioManager = event.getGuild().getAudioManager();
-        final AudioChannelUnion memberChannel = memberVoiceState.getChannel();
 
-        if (self.getPermissions().contains(botPermission)) {
-            audioManager.openAudioConnection(memberChannel);
-        }
-        event.reply("Connecting to '\uD83D\uDD0A %s'" + event.getChannel().toString()).queue();
-
-        PlayerManager.getInstance()
-                .loadAndPlay(channel, "https://www.youtube.com/watch?v=FG0R6DOdXL0");
-
-        return null;
+        return;
     }
 }

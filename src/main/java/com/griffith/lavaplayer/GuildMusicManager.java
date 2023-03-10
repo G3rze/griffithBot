@@ -1,22 +1,27 @@
 package com.griffith.lavaplayer;
 
+import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 
 public class GuildMusicManager {
-    public final AudioPlayer audioPlayer;
-    public final TrackScheduler scheduler;
 
-    private final AudioPlayerSendHadler sendHandler;
+    private TrackScheculer trackScheculer;
+    private AudioForwarder audioForwarder;
 
     public GuildMusicManager(AudioPlayerManager manager){
-         this.audioPlayer = manager.createPlayer();
-         this.scheduler = new TrackScheduler(this.audioPlayer);
-         this.audioPlayer.addListener(this.scheduler);
-         this.sendHandler = new AudioPlayerSendHadler(this.audioPlayer);
+        AudioPlayer player = manager.createPlayer();
+        trackScheculer = new TrackScheculer(player);
+        player.addListener(trackScheculer);
+        audioForwarder = new AudioForwarder(player);
     }
 
-    public AudioPlayerSendHadler getSendHandler(){
-        return sendHandler;
+    public TrackScheculer getTrackScheculer(){
+        return trackScheculer;
     }
+
+    public AudioForwarder getAudioForwarder(){
+        return audioForwarder;
+    }
+
 }
