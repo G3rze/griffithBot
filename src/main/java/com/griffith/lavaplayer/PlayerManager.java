@@ -47,15 +47,19 @@ public class PlayerManager {
             public void trackLoaded(AudioTrack audioTrack) {
                 guildMusicManager.getTrackScheculer().queue(audioTrack);
             }
-
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
-
+                if (trackURL.contains("www.youtube.com/playlist")){
+                    for (int i = 0; i < audioPlaylist.getTracks().size(); i++) {
+                        guildMusicManager.getTrackScheculer().queue(audioPlaylist.getTracks().get(i));
+                    }
+                } else {
+                    guildMusicManager.getTrackScheculer().queue(audioPlaylist.getTracks().get(0));
+                }
             }
 
             @Override
             public void noMatches() {
-
             }
 
             @Override

@@ -1,7 +1,8 @@
 package com.griffith;
 
-import com.griffith.commands.GiveRole;
-import com.griffith.commands.NewRole;
+import com.griffith.commands.management.GiveRole;
+import com.griffith.commands.management.NewRole;
+import com.griffith.commands.music.Leave;
 import com.griffith.commands.music.Play;
 import com.griffith.commands.music.Skip;
 import com.griffith.commands.music.Stop;
@@ -44,6 +45,7 @@ public class GriffithBot {
         manager.add(new Play(this));
         manager.add(new Skip(this));
         manager.add(new Stop(this));
+        manager.add(new Leave(this));
         shardManager.addEventListener(manager);
 
     }

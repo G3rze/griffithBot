@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class Play extends OptionCommand {
@@ -22,7 +24,7 @@ public class Play extends OptionCommand {
         this.botPermission = Permission.VOICE_SPEAK;
         this.args = new ArrayList<>();
 
-        args.add(new OptionData(OptionType.STRING, "url", "The URL of the song that you want to play", true));
+        args.add(new OptionData(OptionType.STRING, "name", "The name of the song you want to play", true));
     }
 
     @Override
@@ -48,10 +50,18 @@ public class Play extends OptionCommand {
                 return;
             }
         }
-        PlayerManager playerManager = PlayerManager.getInstance();
-        playerManager.play(event.getGuild(), event.getOption("url").getAsString());
 
-        event.reply("Next song added to the queue!").queue();
+        String name = event.getOption("name").getAsString();
+        try {
+            new URI(name);
+        } catch (URISyntaxException e) {
+            name = "ytsearch:" + name;
+        }
+
+        PlayerManager playerManager = PlayerManager.getInstance();
+        playerManager.play(event.getGuild(), name);
+
+        event.reply("New song added to the queue!").queue();
 
 
         return;

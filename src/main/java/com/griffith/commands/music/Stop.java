@@ -22,26 +22,9 @@ public class Stop extends SimpleCommand {
 
     @Override
     public void execute(SlashCommandInteraction event) {
-        Member member = event.getMember();
-        GuildVoiceState memberVoiceState = member.getVoiceState();
+        InChannelChecker checker = new InChannelChecker();
 
-        if(!memberVoiceState.inAudioChannel()){
-            event.reply("You must be in a voice channel!").queue();
-            return;
-        }
-
-        Member selfBot = event.getGuild().getSelfMember();
-        GuildVoiceState selfBotVoiceState = selfBot.getVoiceState();
-
-        if(!selfBotVoiceState.inAudioChannel()){
-            event.reply("I'm not in an audio channel!").queue();
-            return;
-        }
-
-        if(selfBotVoiceState.getChannel() != memberVoiceState.getChannel()){
-            event.reply("You're not in the same channel as me!").queue();
-            return;
-        }
+        checker.inChannerlChecker(event);
 
         GuildMusicManager guildMusicManager = PlayerManager.getInstance().getGuildMusicManager(event.getGuild());
         TrackScheculer trackScheculer = guildMusicManager.getTrackScheculer();
