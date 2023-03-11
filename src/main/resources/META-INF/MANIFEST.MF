@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.griffith.GriffithBot
+Main-Class: com.griffith.bot.GriffithBot
 
