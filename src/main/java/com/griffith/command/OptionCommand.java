@@ -8,12 +8,12 @@ import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 public abstract class OptionCommand {
-  public Builder bot;
-  public String name;
-  public String description;
-  public List<OptionData> args;
-  public Permission permission;
-  public Permission botPermission;
+  protected Builder bot;
+  protected String name;
+  protected String description;
+  protected List<OptionData> args;
+  protected Permission permission;
+  protected Permission botPermission;
 
   protected OptionCommand(Builder bot) {
     this.bot = bot;

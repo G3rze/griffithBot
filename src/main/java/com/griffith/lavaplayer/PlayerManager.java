@@ -13,9 +13,9 @@ import net.dv8tion.jda.api.entities.Guild;
 
 public class PlayerManager {
 
-  private static PlayerManager INSTANCE;
-  private Map<Long, GuildMusicManager> guildMusicManagerMap = new HashMap<>();
-  private AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
+  private static PlayerManager playerManager;
+  private final Map<Long, GuildMusicManager> guildMusicManagerMap = new HashMap<>();
+  private final AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
 
   private PlayerManager() {
     AudioSourceManagers.registerRemoteSources(audioPlayerManager);
@@ -23,16 +23,16 @@ public class PlayerManager {
   }
 
   public static PlayerManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new PlayerManager();
+    if (playerManager == null) {
+      playerManager = new PlayerManager();
     }
-    return INSTANCE;
+    return playerManager;
   }
 
   public GuildMusicManager getGuildMusicManager(Guild guild) {
     return guildMusicManagerMap.computeIfAbsent(
         guild.getIdLong(),
-        (guildId) -> {
+        guildId -> {
           GuildMusicManager musicManager = new GuildMusicManager(audioPlayerManager);
 
           guild.getAudioManager().setSendingHandler(musicManager.getAudioForwarder());
@@ -64,10 +64,12 @@ public class PlayerManager {
           }
 
           @Override
-          public void noMatches() {}
+          public void noMatches() { //
+          }
 
           @Override
-          public void loadFailed(FriendlyException e) {}
+          public void loadFailed(FriendlyException e) { //
+          }
         });
   }
 }

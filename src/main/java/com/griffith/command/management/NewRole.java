@@ -33,13 +33,14 @@ public class NewRole extends OptionCommand {
   public void execute(SlashCommandInteraction event) {
 
     OptionMapping role = event.getOption("role");
+    OptionMapping permissions = event.getOption("permission");
+
     String name = role.getAsString();
     if (event.getMember().getPermissions().contains(permission)) {
-      if (!event.getGuild().getRoles().contains(role)) {
-        if (event.getOption("permission") != null) {
-          OptionMapping permission = event.getOption("permission");
-          String type = permission.getAsString();
-          switch (type.toLowerCase()) {
+      if (!event.getGuild().getRoles().toString().contains(name)) {
+        if (permissions != null) {
+          String permissionName = permissions.getAsString();
+          switch (permissionName.toLowerCase()) {
             case "admin" -> {
               Guild guild = event.getGuild();
               guild
@@ -86,6 +87,5 @@ public class NewRole extends OptionCommand {
     } else {
       event.reply("You don't have the permission to do this!").setEphemeral(true).queue();
     }
-    return;
   }
 }
