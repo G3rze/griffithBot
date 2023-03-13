@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
 public class InChannelChecker {
 
-  public void inChannerlChecker(SlashCommandInteraction event) {
+  public void getChecker(SlashCommandInteraction event) {
     Member member = event.getMember();
     GuildVoiceState memberVoiceState = member.getVoiceState();
 
@@ -25,7 +25,6 @@ public class InChannelChecker {
 
     if (selfBotVoiceState.getChannel() != memberVoiceState.getChannel()) {
       event.reply("You're not in the same channel as me!").queue();
-      return;
     }
   }
 }

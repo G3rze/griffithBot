@@ -4,6 +4,10 @@ import com.griffith.bot.Builder;
 import com.griffith.command.SimpleCommand;
 import com.griffith.lavaplayer.GuildMusicManager;
 import com.griffith.lavaplayer.PlayerManager;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import java.util.ArrayList;
+import java.util.List;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
@@ -21,12 +25,21 @@ public class Skip extends SimpleCommand {
   public void execute(SlashCommandInteraction event) {
     InChannelChecker checker = new InChannelChecker();
 
-    checker.inChannerlChecker(event);
+    checker.getChecker(event);
 
     GuildMusicManager guildMusicManager =
         PlayerManager.getInstance().getGuildMusicManager(event.getGuild());
-    guildMusicManager.getTrackScheculer().getPlayer().stopTrack();
+    List<AudioTrack> queue = new ArrayList<>(guildMusicManager.getTrackScheculer().getQueue());
 
-    event.reply("Skipped").queue();
+    if (!queue.isEmpty()) {
+      AudioTrackInfo info = queue.get(0).getInfo();
+      EmbedMessage getEmbed = new EmbedMessage();
+      event
+          .replyEmbeds(getEmbed.getEmbedMessage(info.title, info.uri, "Playing this song!"))
+          .queue();
+    }
+    event.reply("There's no more songs!").queue();
+
+    guildMusicManager.getTrackScheculer().getPlayer().stopTrack();
   }
 }

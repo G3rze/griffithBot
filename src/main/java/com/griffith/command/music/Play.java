@@ -59,12 +59,9 @@ public class Play extends OptionCommand {
     } catch (URISyntaxException e) {
       name = "ytsearch:" + name;
     }
-
     PlayerManager playerManager = PlayerManager.getInstance();
     playerManager.play(event.getGuild(), name);
 
-    event.reply("New song added to the queue!").queue();
-
-    return;
+    event.reply("Song added to the queue").queue();
   }
 }

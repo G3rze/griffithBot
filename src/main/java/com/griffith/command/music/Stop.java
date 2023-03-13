@@ -22,7 +22,7 @@ public class Stop extends SimpleCommand {
   public void execute(SlashCommandInteraction event) {
     InChannelChecker checker = new InChannelChecker();
 
-    checker.inChannerlChecker(event);
+    checker.getChecker(event);
 
     GuildMusicManager guildMusicManager =
         PlayerManager.getInstance().getGuildMusicManager(event.getGuild());

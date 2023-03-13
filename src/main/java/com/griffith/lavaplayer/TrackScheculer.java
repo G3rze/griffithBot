@@ -11,6 +11,7 @@ public class TrackScheculer extends AudioEventAdapter {
 
   private final AudioPlayer player;
   private final BlockingQueue<AudioTrack> queue = new LinkedBlockingQueue<>();
+  private boolean isRepeat = false;
 
   public TrackScheculer(AudioPlayer player) {
     this.player = player;
@@ -18,7 +19,11 @@ public class TrackScheculer extends AudioEventAdapter {
 
   @Override
   public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-    player.startTrack(queue.poll(), false);
+    if (isRepeat) {
+      player.startTrack(track.makeClone(), false);
+    } else {
+      player.startTrack(queue.poll(), false);
+    }
   }
 
   public void queue(AudioTrack track) {
@@ -33,5 +38,13 @@ public class TrackScheculer extends AudioEventAdapter {
 
   public BlockingQueue<AudioTrack> getQueue() {
     return queue;
+  }
+
+  public boolean isRepeat() {
+    return isRepeat;
+  }
+
+  public void setRepeat(boolean repeat) {
+    isRepeat = repeat;
   }
 }
