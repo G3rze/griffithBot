@@ -10,3 +10,4 @@
 - /skip: Skip the current song
 - /stop : Clear the song's queue
 - /leave: The bot leaves the voicechat
+- /loop: Repeat the current song in a loop (To desactivate use the /loop comand a second time)
