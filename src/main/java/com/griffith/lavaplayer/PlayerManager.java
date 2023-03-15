@@ -1,5 +1,6 @@
 package com.griffith.lavaplayer;
 
+import com.griffith.bot.GriffithBot;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -9,7 +10,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.dv8tion.jda.api.entities.Guild;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlayerManager {
 
@@ -47,6 +51,8 @@ public class PlayerManager {
         guildMusicManager,
         trackURL,
         new AudioLoadResultHandler() {
+          private static final Logger logger = LoggerFactory.getLogger(GriffithBot.class);
+
           @Override
           public void trackLoaded(AudioTrack audioTrack) {
             guildMusicManager.getTrackScheculer().queue(audioTrack);
@@ -64,11 +70,14 @@ public class PlayerManager {
           }
 
           @Override
-          public void noMatches() { //
+          public void noMatches() {
+            logger.info("No matches found for the requested track.");
           }
 
           @Override
-          public void loadFailed(FriendlyException e) { //
+          public void loadFailed(FriendlyException e) {
+              final String ERROR_MESSAGE = "Failed to load the track: " + e.getMessage();
+            logger.error(ERROR_MESSAGE);
           }
         });
   }
