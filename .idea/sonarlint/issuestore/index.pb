@@ -28,8 +28,6 @@ g
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-e
-5src/main/java/com/griffith/command/SimpleCommand.java,e/f/ef81e501b4c0062e410d1901601b4d044b8b718d
 i
 9src/main/java/com/griffith/lavaplayer/AudioForwarder.java,4/e/4ef56e44b796b07f6b5a510d60928b1c949b2f89
 l
@@ -40,7 +38,5 @@ f
 6src/main/java/com/griffith/command/CommandManager.java,d/f/df57ccf9341c2b80771d2326141419ddf7b53d8c
 A
 FinalDiagram.puml,2/9/291e3c5569f58307b414f54634bccbd62a16bbab
-[
-+src/main/java/com/griffith/bot/Builder.java,a/2/a2872f5a5393e872fd40207cbfbed8ba93804249
 <
 .env.example,d/4/d4dae00d11854b35292c2b8a30515a9a0aa2d871
