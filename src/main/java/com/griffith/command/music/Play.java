@@ -2,6 +2,7 @@ package com.griffith.command.music;
 
 import com.griffith.bot.Builder;
 import com.griffith.command.OptionCommand;
+import com.griffith.lavaplayer.GuildMusicManager;
 import com.griffith.lavaplayer.PlayerManager;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +41,7 @@ public class Play extends OptionCommand {
     Member selfBot = event.getGuild().getSelfMember();
     GuildVoiceState selfBotVoiceState = selfBot.getVoiceState();
 
+
     if (!selfBotVoiceState.inAudioChannel()) {
       event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
       event
@@ -61,6 +63,10 @@ public class Play extends OptionCommand {
     }
     PlayerManager playerManager = PlayerManager.getInstance();
     playerManager.play(event.getGuild(), name);
+
+    GuildMusicManager guildMusicManager = playerManager.getGuildMusicManager(event.getGuild());
+
+    guildMusicManager.getTrackScheculer().channel(event.getChannel().asTextChannel());
 
     event.reply("Song added to the queue").queue();
   }
