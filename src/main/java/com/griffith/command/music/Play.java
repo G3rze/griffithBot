@@ -41,7 +41,6 @@ public class Play extends OptionCommand {
     Member selfBot = event.getGuild().getSelfMember();
     GuildVoiceState selfBotVoiceState = selfBot.getVoiceState();
 
-
     if (!selfBotVoiceState.inAudioChannel()) {
       event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
       event

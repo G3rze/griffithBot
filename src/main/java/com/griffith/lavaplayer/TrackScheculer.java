@@ -1,14 +1,14 @@
 package com.griffith.lavaplayer;
+
 import com.griffith.command.music.EmbedMessage;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class TrackScheculer extends AudioEventAdapter {
 
@@ -32,7 +32,7 @@ public class TrackScheculer extends AudioEventAdapter {
     }
   }
 
-  public void channel(TextChannel channel){
+  public void channel(TextChannel channel) {
     this.channel = channel;
   }
 
@@ -41,10 +41,10 @@ public class TrackScheculer extends AudioEventAdapter {
     AudioTrackInfo info = track.getInfo();
 
     EmbedMessage getEmbed = new EmbedMessage();
-    channel.sendMessageEmbeds(getEmbed.getEmbedMessage(info.title, info.uri, "Playing this song!"))
-            .queue();
+    channel
+        .sendMessageEmbeds(getEmbed.getEmbedMessage(info.title, info.uri, "Playing this song!"))
+        .queue();
   }
-
 
   public void queue(AudioTrack track) {
     if (!player.startTrack(track, true)) {

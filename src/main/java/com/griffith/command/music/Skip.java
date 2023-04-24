@@ -36,6 +36,5 @@ public class Skip extends SimpleCommand {
     event.reply("There's no more songs!").queue();
 
     guildMusicManager.getTrackScheculer().getPlayer().stopTrack();
-
   }
 }
